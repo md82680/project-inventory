@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <nav>
+        <div class="auth-links">
+            <a href="{{ url_for('login') }}" class="login-link">Login</a>
+        </div>
+        <div class="auth-links">
+            <a href="{{ url_for('register') }}" class="register-link">Register</a>
+        </div>
+    </nav>
+    <div class="container" style="text-align: center;">
+        <h1>Project Inventory</h1>
+        <h3> Welcome to the Project Inventory Tracker!</h3>
+    </div>
+    <div class="container" style="text-align: center;">
+        <p>This is a simple inventory tracker for projects. You can add, edit, and delete items in your inventory to track your projects expenses</p>
+    </div>
+    
+</body>
+</html>
