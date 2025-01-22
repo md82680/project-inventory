@@ -4,12 +4,19 @@ CREATE TABLE IF NOT EXISTS users (
     password TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS inventory (
+CREATE TABLE IF NOT EXISTS projects (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
-    projectname TEXT NOT NULL,
-    expensetype TEXT NOT NULL,
-    expenseamount REAL NOT NULL,
-    date DATE NOT NULL,
+    name TEXT NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id)
-); 
+);
+
+CREATE TABLE IF NOT EXISTS expenses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    project_id INTEGER NOT NULL,
+    expense_type TEXT NOT NULL,
+    amount REAL NOT NULL,
+    date DATE NOT NULL,
+    FOREIGN KEY (project_id) REFERENCES projects (id)
+);

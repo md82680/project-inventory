@@ -64,20 +64,25 @@ def dashboard():
 @app.route('/add_project', methods=['POST'])
 def add_project():
     if 'user_id' not in session:
-        return jsonify({'error': 'Not logged in'}), 401
+        return jsonify({'success': False, 'error': 'Not logged in'})
     
     data = request.get_json()
-    result = add_project(
-        session['user_id'],
-        data['projectname'],
-        data['expensetype'],
-        data['expenseamount'],
-        data['date']
-    )
+    project_name = data.get('name')
     
-    if result:
+    if not project_name:
+        return jsonify({'success': False, 'error': 'Project name is required'})
+    
+    try:
+        db = get_db()
+        db.execute(
+            'INSERT INTO projects (user_id, name) VALUES (?, ?)',
+            (session['user_id'], project_name)
+        )
+        db.commit()
         return jsonify({'success': True})
-    return jsonify({'error': 'Failed to add project'}), 400
+    except Exception as e:
+        print(f"Error adding project: {e}")
+        return jsonify({'success': False, 'error': str(e)})
 
 @app.teardown_appcontext
 def teardown_db(exception):

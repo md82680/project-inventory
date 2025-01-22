@@ -1,61 +1,64 @@
 {% extends "base.html" %}
 
 {% block title %}Dashboard{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+{% endblock %}
 
 {% block content %}
     <h1>{{ user.username }}'s Dashboard</h1>
-    <p>Welcome to your dashboard. Here you can manage your projects and inventory.</p>
     
-    <!-- Project List -->
-    <div class="project-list">
+    <!-- Project Selection -->
+    <div class="project-section">
         <select id="project-select">
+            <option value="">Select a Project</option>
             {% for project in projects %}
                 <option value="{{ project.id }}">{{ project.name }}</option>
             {% endfor %}
         </select>
+        <button onclick="showNewProjectModal()">Add New Project</button>
     </div>
 
-    <!-- Add Project Form -->
-    <div class="inventory-list">
-        <button id="add-item-button" onclick="showProjectForm()">Add New Project</button>
-        
-        <div id="project-form" style="display: none;">
+    <!-- New Project Modal -->
+    <div id="new-project-modal" class="modal">
+        <div class="modal-content">
+            <h2>Add New Project</h2>
             <form id="new-project-form">
-                <input type="text" id="projectname" placeholder="Project Name" required>
-                <input type="text" id="expensetype" placeholder="Expense Type" required>
-                <input type="number" id="expenseamount" placeholder="Amount" step="0.01" required>
-                <input type="date" id="date" required>
-                <button type="submit">Save Project</button>
+                <input type="text" id="project-name" placeholder="Project Name" required>
+                <div class="modal-buttons">
+                    <button type="submit">Save</button>
+                    <button type="button" onclick="hideNewProjectModal()">Cancel</button>
+                </div>
             </form>
         </div>
     </div>
 
     <script>
-        function showProjectForm() {
-            document.getElementById('project-form').style.display = 'block';
+        function showNewProjectModal() {
+            document.getElementById('new-project-modal').style.display = 'block';
+        }
+
+        function hideNewProjectModal() {
+            document.getElementById('new-project-modal').style.display = 'none';
+            document.getElementById('project-name').value = ''; // Clear input
         }
 
         document.getElementById('new-project-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            const projectName = document.getElementById('project-name').value;
             
-            const projectData = {
-                projectname: document.getElementById('projectname').value,
-                expensetype: document.getElementById('expensetype').value,
-                expenseamount: parseFloat(document.getElementById('expenseamount').value),
-                date: document.getElementById('date').value
-            };
-
             fetch('/add_project', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(projectData)
+                body: JSON.stringify({
+                    name: projectName
+                })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Project added successfully!');
                     location.reload(); // Refresh to show new project
                 } else {
                     alert('Failed to add project: ' + data.error);
@@ -65,6 +68,8 @@
                 console.error('Error:', error);
                 alert('Failed to add project');
             });
+
+            hideNewProjectModal();
         });
     </script>
 {% endblock %}
