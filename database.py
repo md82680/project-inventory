@@ -62,3 +62,27 @@ def verify_user(username, password):
         return user
     
     return None 
+
+def add_project(user_id, projectname, expensetype, expenseamount, date):
+    """Add new project to inventory"""
+    db = get_db()
+    try:
+        db.execute(
+            'INSERT INTO inventory (user_id, projectname, expensetype, expenseamount, date) VALUES (?, ?, ?, ?, ?)',
+            (user_id, projectname, expensetype, expenseamount, date)
+        )
+        db.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return False
+
+def get_user(user_id):
+    """Get user data by ID"""
+    db = get_db()
+    user = db.execute(
+        'SELECT * FROM users WHERE id = ?', (user_id,)
+    ).fetchone()
+    print(f"get_user result for id {user_id}: {user}")  # Debug print
+    return user
+

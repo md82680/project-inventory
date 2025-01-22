@@ -1,30 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-</head>
-<body>
-    <nav>
-        <ul>
-            <li><a href="{{ url_for('index') }}">Home</a></li>
-            {% if session.user_id %}
-                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
-            {% else %}
-                <li><a href="{{ url_for('login') }}">Login</a></li>
-                <li><a href="{{ url_for('register') }}">Register</a></li>
-            {% endif %}
-        </ul>
-    </nav>
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
     <div class="container" style="text-align: center;">
         <h1>Project Inventory</h1>
-        <h3> Welcome to the Project Inventory Tracker!</h3>
+        <h3>Welcome to the Project Inventory Tracker!</h3>
     </div>
     <div class="container" style="text-align: center;">
         <p>This is a simple inventory tracker for projects. You can add, edit, and delete items in your inventory to track your projects expenses</p>
     </div>
-    
-</body>
-</html>
+{% endblock %}
