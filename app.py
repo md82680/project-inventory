@@ -34,7 +34,7 @@ def login():
             print(f"Session after login: {session}")  # Debug print
             return redirect(url_for('dashboard'))
         
-        flash('Invalid username or password')
+        flash('Invalid username or password. Please register if you don\'t have an account.')
     
     return render_template('login.html')
 

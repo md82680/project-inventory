@@ -1,0 +1,29 @@
+.login-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+    
+.flash-message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.error {
+    background-color: #ffebee;
+    border: 1px solid #ef5350;
+    color: #c62828;
+}
+
+.register-link {
+    display: inline-block;
+    margin-top: 5px;
+    color: #1976d2;
+    text-decoration: none;
+}
+
+.register-link:hover {
+    text-decoration: underline;
+}
