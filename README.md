@@ -41,7 +41,7 @@ The application uses three main tables:
 
 1. Clone the repository:
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/yourusername/ProjectInventory.git
 ```
 
 2. Install required packages:
