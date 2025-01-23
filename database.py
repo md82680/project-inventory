@@ -132,3 +132,47 @@ def add_expense(project_id, expense_type, amount, date):
         print(f"Error adding expense: {e}")
         return False
 
+def delete_project(project_id, user_id):
+    """Delete a project and all its expenses"""
+    db = get_db()
+    try:
+        # First verify the project belongs to the user
+        project = db.execute(
+            'SELECT * FROM projects WHERE id = ? AND user_id = ?',
+            (project_id, user_id)
+        ).fetchone()
+        
+        if not project:
+            return False
+            
+        # Delete all expenses for this project
+        db.execute('DELETE FROM expenses WHERE project_id = ?', (project_id,))
+        # Delete the project
+        db.execute('DELETE FROM projects WHERE id = ?', (project_id,))
+        db.commit()
+        return True
+    except Exception as e:
+        print(f"Error deleting project: {e}")
+        return False
+
+def delete_expense(expense_id, project_id, user_id):
+    """Delete a specific expense"""
+    db = get_db()
+    try:
+        # First verify the expense belongs to a project owned by the user
+        exists = db.execute('''
+            SELECT e.id FROM expenses e
+            JOIN projects p ON e.project_id = p.id
+            WHERE e.id = ? AND p.id = ? AND p.user_id = ?
+        ''', (expense_id, project_id, user_id)).fetchone()
+        
+        if not exists:
+            return False
+            
+        db.execute('DELETE FROM expenses WHERE id = ?', (expense_id,))
+        db.commit()
+        return True
+    except Exception as e:
+        print(f"Error deleting expense: {e}")
+        return False
+

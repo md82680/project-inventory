@@ -1,5 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
-from database import get_db, close_db, init_db, register_user, verify_user, add_project, get_user, get_user_projects, add_new_project, get_project_expenses, add_expense
+from database import (
+    get_db, 
+    close_db, 
+    init_db, 
+    register_user, 
+    verify_user, 
+    add_project, 
+    get_user,
+    get_user_projects,
+    add_new_project,
+    get_project_expenses,
+    add_expense,
+    delete_project,
+    delete_expense
+)
 from secret_key import SECRET_KEY
 from datetime import timedelta
 
@@ -126,6 +140,24 @@ def add_project_expense(project_id):
     if success:
         return jsonify({'success': True})
     return jsonify({'success': False, 'error': 'Failed to add expense'})
+
+@app.route('/project/<int:project_id>/delete', methods=['POST'])
+def delete_project_route(project_id):
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'error': 'Not logged in'})
+    
+    if delete_project(project_id, session['user_id']):
+        return jsonify({'success': True})
+    return jsonify({'success': False, 'error': 'Failed to delete project'})
+
+@app.route('/project/<int:project_id>/expense/<int:expense_id>/delete', methods=['POST'])
+def delete_expense_route(project_id, expense_id):
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'error': 'Not logged in'})
+    
+    if delete_expense(expense_id, project_id, session['user_id']):
+        return jsonify({'success': True})
+    return jsonify({'success': False, 'error': 'Failed to delete expense'})
 
 @app.teardown_appcontext
 def teardown_db(exception):
