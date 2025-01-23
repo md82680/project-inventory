@@ -2,6 +2,10 @@
 
 {% block title %}Home{% endblock %}
 
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+{% endblock %}
+
 {% block content %}
     <div class="container" style="text-align: center;">
         <h1>Project Inventory</h1>
@@ -9,5 +13,8 @@
     </div>
     <div class="container" style="text-align: center;">
         <p>This is a simple inventory tracker for projects. You can add, edit, and delete items in your inventory to track your projects expenses</p>
+    </div>
+    <div class="image-container">
+        <img src="{{ url_for('static', filename='images/hammer.png') }}" alt="Hammer and Nail" class="hero-image">
     </div>
 {% endblock %}

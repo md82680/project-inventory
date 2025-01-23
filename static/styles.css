@@ -262,3 +262,24 @@ nav ul li:first-child a {
     font-weight: bold;
     padding-left: 0;
 }
+
+/* Hero Image Styles */
+.image-container {
+    text-align: center;
+    margin: 2rem auto;
+    max-width: 800px;
+}
+
+.hero-image {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    margin: 2rem 0;
+}
+
+/* Container Styles */
+.container {
+    margin: 2rem auto;
+    max-width: 800px;
+    padding: 0 1rem;
+}
