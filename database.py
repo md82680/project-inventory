@@ -86,3 +86,49 @@ def get_user(user_id):
     print(f"get_user result for id {user_id}: {user}")  # Debug print
     return user
 
+def get_user_projects(user_id):
+    """Get all projects for a user"""
+    db = get_db()
+    projects = db.execute(
+        'SELECT * FROM projects WHERE user_id = ? ORDER BY created DESC',
+        (user_id,)
+    ).fetchall()
+    return projects
+
+def add_new_project(user_id, project_name):
+    """Add a new project for a user"""
+    db = get_db()
+    try:
+        cursor = db.execute(
+            'INSERT INTO projects (user_id, name) VALUES (?, ?)',
+            (user_id, project_name)
+        )
+        db.commit()
+        return cursor.lastrowid  # Returns the ID of the new project
+    except Exception as e:
+        print(f"Error adding project: {e}")
+        return None
+
+def get_project_expenses(project_id):
+    """Get all expenses for a project"""
+    db = get_db()
+    expenses = db.execute(
+        'SELECT * FROM expenses WHERE project_id = ? ORDER BY date DESC',
+        (project_id,)
+    ).fetchall()
+    return expenses
+
+def add_expense(project_id, expense_type, amount, date):
+    """Add a new expense to a project"""
+    db = get_db()
+    try:
+        db.execute(
+            'INSERT INTO expenses (project_id, expense_type, amount, date) VALUES (?, ?, ?, ?)',
+            (project_id, expense_type, amount, date)
+        )
+        db.commit()
+        return True
+    except Exception as e:
+        print(f"Error adding expense: {e}")
+        return False
+

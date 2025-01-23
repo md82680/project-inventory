@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.name }} - History{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="project-history">
+    <h1>{{ project.name }}</h1>
+    
+    <button onclick="showAddExpenseModal()">Add Expense</button>
+    
+    {% if expenses %}
+        <table class="expense-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td>{{ expense.date }}</td>
+                    <td>{{ expense.expense_type }}</td>
+                    <td>${{ "%.2f"|format(expense.amount) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="expense-total">
+            Total: ${{ "%.2f"|format(expenses|sum(attribute='amount')) }}
+        </div>
+    {% else %}
+        <div class="no-expenses">
+            No expenses recorded for this project yet.
+        </div>
+    {% endif %}
+    
+    <div id="add-expense-modal" class="modal">
+        <div class="modal-content">
+            <h2>Add Expense</h2>
+            <form id="add-expense-form">
+                <input type="text" id="expense-type" placeholder="Expense Type" required>
+                <input type="number" id="expense-amount" placeholder="Amount" step="0.01" required>
+                <input type="date" id="expense-date" required>
+                <div class="modal-buttons">
+                    <button type="submit">Save</button>
+                    <button type="button" onclick="hideAddExpenseModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showAddExpenseModal() {
+        document.getElementById('add-expense-modal').style.display = 'block';
+        // Set default date to today
+        document.getElementById('expense-date').valueAsDate = new Date();
+    }
+    
+    function hideAddExpenseModal() {
+        document.getElementById('add-expense-modal').style.display = 'none';
+        document.getElementById('add-expense-form').reset();
+    }
+    
+    document.getElementById('add-expense-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const data = {
+            type: document.getElementById('expense-type').value,
+            amount: parseFloat(document.getElementById('expense-amount').value),
+            date: document.getElementById('expense-date').value
+        };
+        
+        fetch('/project/{{ project.id }}/add_expense', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Failed to add expense: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to add expense');
+        });
+        
+        hideAddExpenseModal();
+    });
+</script>
+{% endblock %}

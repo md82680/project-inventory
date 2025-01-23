@@ -71,5 +71,12 @@
 
             hideNewProjectModal();
         });
+
+        document.getElementById('project-select').addEventListener('change', function() {
+            const projectId = this.value;
+            if (projectId) {
+                window.location.href = `/project/${projectId}`;
+            }
+        });
     </script>
 {% endblock %}

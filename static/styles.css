@@ -79,3 +79,83 @@
 .project-section button:hover {
     background-color: #1565c0;
 }
+
+/* Project History Styles */
+.project-history {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.expense-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.expense-table th,
+.expense-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.expense-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+.expense-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Add Expense Button */
+.project-history button {
+    padding: 8px 16px;
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.project-history button:hover {
+    background-color: #1565c0;
+}
+
+/* Add Expense Modal Form */
+#add-expense-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#add-expense-form input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#add-expense-form input:focus {
+    outline: none;
+    border-color: #1976d2;
+}
+
+/* Total Amount Display */
+.expense-total {
+    margin-top: 20px;
+    text-align: right;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+/* Empty State */
+.no-expenses {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-style: italic;
+}

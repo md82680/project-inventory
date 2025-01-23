@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
-from database import get_db, close_db, init_db, register_user, verify_user, add_project, get_user
+from database import get_db, close_db, init_db, register_user, verify_user, add_project, get_user, get_user_projects, add_new_project, get_project_expenses, add_expense
 from secret_key import SECRET_KEY
 from datetime import timedelta
 
@@ -59,7 +59,8 @@ def dashboard():
         return redirect(url_for('login'))
     
     user = get_user(session['user_id'])
-    return render_template('dashboard.html', user=user, projects=[])
+    projects = get_user_projects(session['user_id'])
+    return render_template('dashboard.html', user=user, projects=projects)
 
 @app.route('/add_project', methods=['POST'])
 def add_project():
@@ -72,17 +73,59 @@ def add_project():
     if not project_name:
         return jsonify({'success': False, 'error': 'Project name is required'})
     
-    try:
-        db = get_db()
-        db.execute(
-            'INSERT INTO projects (user_id, name) VALUES (?, ?)',
-            (session['user_id'], project_name)
-        )
-        db.commit()
+    project_id = add_new_project(session['user_id'], project_name)
+    if project_id:
+        return jsonify({'success': True, 'project_id': project_id})
+    return jsonify({'success': False, 'error': 'Failed to add project'})
+
+@app.route('/project/<int:project_id>')
+def project_history(project_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    # Verify the project belongs to the user
+    db = get_db()
+    project = db.execute(
+        'SELECT * FROM projects WHERE id = ? AND user_id = ?',
+        (project_id, session['user_id'])
+    ).fetchone()
+    
+    if not project:
+        flash('Project not found')
+        return redirect(url_for('dashboard'))
+    
+    expenses = get_project_expenses(project_id)
+    return render_template('history.html', project=project, expenses=expenses)
+
+@app.route('/project/<int:project_id>/add_expense', methods=['POST'])
+def add_project_expense(project_id):
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'error': 'Not logged in'})
+    
+    # Verify the project belongs to the user
+    db = get_db()
+    project = db.execute(
+        'SELECT * FROM projects WHERE id = ? AND user_id = ?',
+        (project_id, session['user_id'])
+    ).fetchone()
+    
+    if not project:
+        return jsonify({'success': False, 'error': 'Project not found'})
+    
+    data = request.get_json()
+    if not all(key in data for key in ['type', 'amount', 'date']):
+        return jsonify({'success': False, 'error': 'Missing required fields'})
+    
+    success = add_expense(
+        project_id=project_id,
+        expense_type=data['type'],
+        amount=data['amount'],
+        date=data['date']
+    )
+    
+    if success:
         return jsonify({'success': True})
-    except Exception as e:
-        print(f"Error adding project: {e}")
-        return jsonify({'success': False, 'error': str(e)})
+    return jsonify({'success': False, 'error': 'Failed to add expense'})
 
 @app.teardown_appcontext
 def teardown_db(exception):
