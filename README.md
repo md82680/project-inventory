@@ -1,5 +1,5 @@
 # Project Inventory Tracker
-#### Video Demo: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+#### Video Demo: https://youtu.be/RsOEJ9CUOJc
 #### Description:
 
 A web-based application built with Flask that helps users track project expenses. This application allows users to create multiple projects and manage their associated expenses in a simple, intuitive interface. Whether you're a contractor managing multiple job sites, a hobbyist tracking material costs, or a project manager monitoring budgets, this tool provides an organized way to track your expenses.
